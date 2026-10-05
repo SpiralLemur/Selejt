@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b5cab">
+<title>BWZ Selejtbejelentő V1</title>
+<style>
+:root{--blue:#0b5cab;--blue2:#eaf3fb;--bg:#f4f6f8;--card:#fff;--text:#17202a;--muted:#667085;--red:#b42318;--green:#067647;--line:#d0d5dd}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--blue);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px #0002}
+header h1{font-size:21px;margin:0} header p{margin:4px 0 0;font-size:13px;opacity:.9}
+main{max-width:760px;margin:auto;padding:16px 14px 32px}.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #10182812;border:1px solid #e4e7ec}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.tab{border:0;padding:12px;border-radius:12px;background:#e4e7ec;font-size:15px;font-weight:700}.tab.active{background:var(--blue);color:#fff}
+label{display:block;font-size:14px;font-weight:700;margin:13px 0 6px}input,select,textarea{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;color:var(--text)}input:focus,select:focus,textarea:focus{outline:3px solid #84caff55;border-color:var(--blue)}
+.shift{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shift label{margin:0}.shift input{display:none}.shift span{display:block;text-align:center;border:1px solid var(--line);padding:12px;border-radius:10px;font-weight:700}.shift input:checked+span{background:var(--blue2);border:2px solid var(--blue);color:var(--blue);padding:11px}
+button{font:inherit;cursor:pointer}.primary,.secondary,.danger,.success{width:100%;border:0;border-radius:11px;padding:13px;font-weight:800;margin-top:14px}.primary{background:var(--blue);color:#fff}.secondary{background:#e4e7ec;color:#1d2939}.danger{background:#fee4e2;color:var(--red)}.success{background:#d1fadf;color:var(--green)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hint{font-size:12px;color:var(--muted);margin-top:5px}.error{color:var(--red);font-weight:700;margin-top:10px}.ok{color:var(--green);font-weight:700;margin-top:10px}.hidden{display:none!important}
+.item{border:1px solid #e4e7ec;border-radius:12px;padding:12px;margin-top:10px}.itemtop{display:flex;justify-content:space-between;gap:12px}.qty{font-size:21px;font-weight:900;color:var(--blue);white-space:nowrap}.meta{font-size:12px;color:var(--muted);margin-top:5px}.actions{display:flex;gap:8px;margin-top:9px}.small{border:0;border-radius:8px;padding:8px 10px;font-weight:700}.edit{background:var(--blue2);color:var(--blue)}.delete{background:#fee4e2;color:var(--red)}
+.summary{display:flex;justify-content:space-between;align-items:center;background:var(--blue2);padding:13px;border-radius:11px;margin-top:12px}.summary b{font-size:22px;color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e4e7ec;text-align:left;padding:8px 5px;vertical-align:top}th{background:#f9fafb}.scroll{overflow:auto}.badge{display:inline-block;padding:4px 7px;border-radius:99px;background:#eaf3fb;color:#0b5cab;font-weight:700;font-size:12px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding-top:8px}.warning{background:#fffaeb;border-color:#fedf89;font-size:13px}.zero{color:var(--green);font-weight:800}
+@media(max-width:520px){.row{grid-template-columns:1fr}.itemtop{align-items:flex-start}header h1{font-size:19px}}
+</style>
+</head>
+<body>
+<header><h1>BWZ Selejtbejelentő</h1><p>Mobilos mintaalkalmazás • V1</p></header>
+<main>
+<div class="tabs"><button class="tab active" data-view="worker">Dolgozói felület</button><button class="tab" data-view="admin">Irodai lista</button></div>
+<section id="worker">
+ <div class="card">
+  <h2 style="margin:0 0 4px;font-size:18px">Új tétel rögzítése</h2>
+  <div class="row"><div><label for="date">Dátum</label><input id="date" type="date"></div><div><label>Állomás</label><input value="BWZ" disabled></div></div>
+  <label>Műszak</label><div class="shift">
+   <label><input type="radio" name="shift" value="DE"><span>DE</span></label>
+   <label><input type="radio" name="shift" value="DU"><span>DU</span></label>
+   <label><input type="radio" name="shift" value="É"><span>É</span></label>
+  </div>
+  <label for="part">Cikkszám és megnevezés</label><select id="part"><option value="">Válassz a listából…</option></select>
+  <label for="qty">Selejt darabszám</label><input id="qty" type="number" min="1" step="1" inputmode="numeric" placeholder="Írd be a darabszámot">
+  <div class="hint">Csak pozitív egész szám adható meg.</div>
+  <label for="note">Megjegyzés <span style="font-weight:400;color:#667085">(opcionális)</span></label><textarea id="note" rows="2" placeholder="Rövid megjegyzés"></textarea>
+  <button id="save" class="primary">Tétel mentése</button><div id="msg"></div>
+ </div>
+ <div class="card"><h2 style="margin:0;font-size:18px">Kiválasztott műszak tételei</h2><div id="items"></div><div id="total" class="summary hidden"><span>Összes selejt</span><b>0 db</b></div><button id="zero" class="success">Nem keletkezett selejt</button><button id="closeShift" class="secondary">Műszak lezárása</button></div>
+</section>
+<section id="admin" class="hidden">
+ <div class="card warning"><b>Fontos:</b> ez az első verzió csak ezen a készüléken, a böngésző helyi tárhelyén ment. A dolgozók telefonjai között még nem oszt meg adatot.</div>
+ <div class="card">
+  <h2 style="margin:0 0 8px;font-size:18px">Beérkezett tételek</h2>
+  <div class="row"><div><label for="filterDate">Dátum szűrése</label><input id="filterDate" type="date"></div><div><label for="filterShift">Műszak</label><select id="filterShift"><option value="">Mind</option><option>DE</option><option>DU</option><option>É</option></select></div></div>
+  <div class="scroll" style="margin-top:12px"><table><thead><tr><th>Dátum</th><th>Műszak</th><th>Cikkszám / megnevezés</th><th>Db</th><th>Megjegyzés</th></tr></thead><tbody id="adminRows"></tbody></table></div>
+  <button id="export" class="primary">CSV export Excelhez</button><button id="clear" class="danger">Mintaadatok törlése</button>
+ </div>
+</section>
+<footer>BWZ Selejtbejelentő V1 • bemutató prototípus</footer>
+</main>
+<script>
+const parts=[
+['7C2.012.113.C','Szerszámosláda'],['7C2.012.113.D','Szerszámosláda'],['7C0.012.113.E','Szerszámosláda'],['7C0.012.113.D','Szerszámosláda'],['7C0.012.113.F','Szerszámosláda'],['6X0.012.243','Kupakleszedő kampó'],['7C0.012.289','Csavarhúzó betét'],['1J0.012.255','Csavarhúzó'],['4H0.805.615.A','Vonószem'],['7C0.012.218','Kerékkulcs kereszt'],['2N0.011.273','Emelőkar'],['8T0.012.259','Lámpaleszedő'],['7C0.012.163.B','Hosszabbító'],['8Z0.012.255','Csavarhúzó'],['6R0.012.289','Csavarhúzó betét'],['8V3 012 635 A','Tartószalag'],['2K4 012 120 A','Szerszámosláda új'],['2K4 012 120','Szerszámosláda új'],['2K7.012.113.L','Szerszámosláda új'],['2K7.012.113.D','Szerszámosláda'],['2K7.012.113.H','Szerszámosláda']];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const storeKey='bwz_scrap_v1'; let data=JSON.parse(localStorage.getItem(storeKey)||'[]'); let editing=null;
+$('#date').value=new Date().toISOString().slice(0,10); parts.forEach(([n,d])=>$('#part').add(new Option(n+' — '+d,n)));
+function selectedShift(){return document.querySelector('input[name=shift]:checked')?.value||''}
+function persist(){localStorage.setItem(storeKey,JSON.stringify(data));render()}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function msg(t,ok=false){$('#msg').className=ok?'ok':'error';$('#msg').textContent=t;setTimeout(()=>$('#msg').textContent='',2500)}
+function save(){let date=$('#date').value,shift=selectedShift(),part=$('#part').value,qty=Number($('#qty').value),note=$('#note').value.trim(); if(!date||!shift||!part||!Number.isInteger(qty)||qty<1)return msg('Töltsd ki a dátumot, műszakot, cikkszámot és a pozitív egész darabszámot.'); let desc=parts.find(x=>x[0]===part)[1];let rec={id:editing||Date.now(),date,shift,station:'BWZ',part,desc,qty,note,status:'nyitott',created:new Date().toISOString()}; if(editing){data=data.map(x=>x.id===editing?rec:x);editing=null;$('#save').textContent='Tétel mentése'}else data.push(rec); $('#part').value='';$('#qty').value='';$('#note').value='';persist();msg('A tétel mentve.',true)}
+function current(){let d=$('#date').value,s=selectedShift();return data.filter(x=>x.date===d&&x.shift===s)}
+function render(){let cur=current();$('#items').innerHTML=cur.length?cur.map(x=>x.zero?`<div class="item zero">✓ Nem keletkezett selejt ebben a műszakban.</div>`:`<div class="item"><div class="itemtop"><div><b>${esc(x.part)}</b><br>${esc(x.desc)}<div class="meta">${esc(x.date)} • ${esc(x.shift)}${x.note?' • '+esc(x.note):''}</div></div><div class="qty">${x.qty} db</div></div><div class="actions"><button class="small edit" onclick="editItem(${x.id})">Szerkesztés</button><button class="small delete" onclick="delItem(${x.id})">Törlés</button></div></div>`).join(''):'<p class="hint">Válassz műszakot. A mentett tételek itt jelennek meg.</p>';let sum=cur.reduce((a,x)=>a+(x.qty||0),0);$('#total').classList.toggle('hidden',!cur.length);$('#total b').textContent=sum+' db';renderAdmin()}
+window.editItem=id=>{let x=data.find(y=>y.id===id);if(!x||x.zero)return;$('#date').value=x.date;$$('input[name=shift]').forEach(r=>r.checked=r.value===x.shift);$('#part').value=x.part;$('#qty').value=x.qty;$('#note').value=x.note;editing=id;$('#save').textContent='Módosítás mentése';scrollTo({top:0,behavior:'smooth'});render()}; window.delItem=id=>{if(confirm('Törlöd ezt a tételt?')){data=data.filter(x=>x.id!==id);persist()}}
+function zero(){let date=$('#date').value,shift=selectedShift();if(!date||!shift)return msg('Előbb válaszd ki a dátumot és a műszakot.');if(current().some(x=>!x.zero))return msg('Ehhez a műszakhoz már van rögzített selejt.');if(!current().length){data.push({id:Date.now(),date,shift,station:'BWZ',zero:true,qty:0,status:'lezárt',created:new Date().toISOString()});persist();msg('A selejtmentes műszak rögzítve.',true)}}
+function closeShift(){let cur=current();if(!cur.length)return msg('Nincs rögzített tétel. Használd a „Nem keletkezett selejt” gombot, ha nulla volt.');if(confirm('Biztosan lezárod a kiválasztott műszakot?')){let ids=new Set(cur.map(x=>x.id));data=data.map(x=>ids.has(x.id)?{...x,status:'lezárt'}:x);persist();msg('A műszak lezárva.',true)}}
+function renderAdmin(){let fd=$('#filterDate').value,fs=$('#filterShift').value,rows=data.filter(x=>(!fd||x.date===fd)&&(!fs||x.shift===fs));$('#adminRows').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.date)}</td><td><span class="badge">${esc(x.shift)}</span></td><td>${x.zero?'<span class="zero">Nem volt selejt</span>':`<b>${esc(x.part)}</b><br>${esc(x.desc)}`}</td><td>${x.qty||0}</td><td>${esc(x.note||'')}</td></tr>`).join(''):'<tr><td colspan="5">Nincs megjeleníthető adat.</td></tr>'}
+function exportCSV(){let rows=[['Dátum','Műszak','Állomás','Cikkszám','Megnevezés','Darabszám','Megjegyzés','Státusz'],...data.map(x=>[x.date,x.shift,x.station,x.zero?'':x.part,x.zero?'Nem volt selejt':x.desc,x.qty||0,x.note||'',x.status])];let csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='BWZ_selejt_export_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href)}
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#worker').classList.toggle('hidden',b.dataset.view!=='worker');$('#admin').classList.toggle('hidden',b.dataset.view!=='admin');renderAdmin()});
+$('#save').onclick=save;$('#zero').onclick=zero;$('#closeShift').onclick=closeShift;$('#export').onclick=exportCSV;$('#clear').onclick=()=>{if(confirm('Biztosan törlöd az összes helyi mintaadatot?')){data=[];persist()}};$('#filterDate').oninput=renderAdmin;$('#filterShift').onchange=renderAdmin;$('#date').onchange=render;$$('input[name=shift]').forEach(r=>r.onchange=render);render();
+</script>
+</body></html>
