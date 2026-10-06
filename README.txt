@@ -1,9 +1,8 @@
-BWZ Selejtbejelentő V2
+BWZ Selejtbejelentő V2.1
 
-Újdonságok:
-- A Dátum mező felett üres „Kitöltő neve” mező található.
-- A dolgozó kézzel írja be a teljes nevét.
-- A név minden tételnél, a selejtmentes műszaknál, az irodai listában és a CSV exportban is szerepel.
-- A darabszám továbbra is kézzel írható be.
+Javítás:
+- A „Cikkszám és megnevezés” legördülő lista 21 választható tétellel ismét bekerült.
+- A kitöltő neve kézzel írható be.
+- A név az irodai listában és a CSV exportban is szerepel.
 
-FONTOS: Ez még helyi prototípus. A mobil és a PC közötti központi szinkronizálás nincs bekötve. Ehhez Google Sheets és Google Apps Script webalkalmazás szükséges.
+Fontos: ez még helyi prototípus, nincs Google Sheets szinkronizálás.
